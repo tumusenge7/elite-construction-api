@@ -2,6 +2,8 @@ const router = require('express').Router();
 const BaseController = require('../controllers/BaseController');
 const { authenticate, authorize } = require('../middleware/auth');
 const Quote = require('../models/Quote');
+const Customer = require('../models/Customer');
+const { paginated } = require('../utils/response');
 const { notifyAdmins } = require('../utils/notifications');
 
 const controller = new BaseController(Quote, {
@@ -19,7 +21,17 @@ const controller = new BaseController(Quote, {
   },
 });
 
-router.get('/', authenticate, (req, res, next) => controller.list(req, res, next));
+router.get('/', authenticate, async (req, res, next) => {
+  try {
+    if (req.user.role === 'Customer' || !req.user.role) {
+      const customerRecord = await Customer.findOne({ user: req.user.id });
+      if (!customerRecord) return paginated(res, [], 0, 1, 20, 'No quotes found');
+      req.query.customer = customerRecord._id.toString();
+    }
+    return controller.list(req, res, next);
+  } catch (err) { next(err); }
+});
+
 router.get('/:id', authenticate, (req, res, next) => controller.get(req, res, next));
 router.post('/', authenticate, (req, res, next) => controller.create(req, res, next));
 router.put('/:id', authenticate, (req, res, next) => controller.update(req, res, next));

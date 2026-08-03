@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
 import { auth as authApi } from '../services/api';
 
@@ -29,6 +30,26 @@ export const AuthProvider = ({ children }) => {
     return data.data.user;
   };
 
+  const register = async (payload) => {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Registration failed');
+    localStorage.setItem('token', data.data.token);
+    localStorage.setItem('user', JSON.stringify(data.data.user));
+    setUser(data.data.user);
+    return data.data.user;
+  };
+
+  const updateUser = (patch) => {
+    const updated = { ...user, ...patch };
+    localStorage.setItem('user', JSON.stringify(updated));
+    setUser(updated);
+  };
+
   const logout = async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
@@ -41,10 +62,10 @@ export const AuthProvider = ({ children }) => {
 
   const isAuthenticated = !!user;
   const isAdmin = user?.role === 'Super Admin' || user?.role === 'Admin';
-  const isCustomer = user?.role === 'Customer';
+  const isCustomer = user?.role === 'Customer' || (!user?.role);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, isAuthenticated, isAdmin, isCustomer }}>
+    <AuthContext.Provider value={{ user, login, register, logout, updateUser, loading, isAuthenticated, isAdmin, isCustomer }}>
       {children}
     </AuthContext.Provider>
   );

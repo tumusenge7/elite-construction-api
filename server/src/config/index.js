@@ -7,6 +7,13 @@ module.exports = {
   jwt: {
     secret: process.env.JWT_SECRET || 'default_secret_change_me',
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+    get expiresInMs() {
+      const match = /^(\d+)([smhd])$/.exec(String(this.expiresIn || '').trim());
+      if (!match) return 7 * 24 * 60 * 60 * 1000;
+      const n = parseInt(match[1], 10);
+      const ms = { s: 1000, m: 60 * 1000, h: 60 * 60 * 1000, d: 24 * 60 * 60 * 1000 }[match[2]];
+      return n * ms;
+    },
   },
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
   smtp: {

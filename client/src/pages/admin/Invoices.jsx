@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Receipt, Loader2, X, Edit3, Trash2, Download } from 'lucide-react';
+import { Search, Plus, Receipt, Loader2, X, Edit3, Trash2 } from 'lucide-react';
 import { crud } from '../../services/api';
 
 const invoicesApi = crud('invoices');

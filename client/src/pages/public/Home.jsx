@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Home as HomeIcon, Building2, Wrench, DraftingCompass, Road, BarChart3 } from 'lucide-react';
 import { crud } from '../../services/api';
+import ProjectsSection from '../../components/projects/ProjectsSection';
+import AboutShowcase from '../../components/about/AboutShowcase';
+import { toProjectCards, FALLBACK_IMG } from '../../components/projects/projectsData';
 
 const projectsApi = crud('projects');
 
 // Put your video URL here — upload your video to /uploads or use an external URL
 const HERO_VIDEO = import.meta.env.VITE_HERO_VIDEO_URL || '';
 
-const FALLBACK_IMG = 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80';
-
 const services = [
-  { icon: '🏠', title: 'Residential', desc: 'Custom homes, villas & apartments built with premium materials.' },
-  { icon: '🏢', title: 'Commercial', desc: 'Office buildings, retail centers & industrial facilities.' },
-  { icon: '🔧', title: 'Renovation', desc: 'Transform your space with expert remodeling services.' },
-  { icon: '📐', title: 'Design & Engineering', desc: 'Architectural design, structural engineering & planning.' },
-  { icon: '🛣️', title: 'Infrastructure', desc: 'Roads, bridges, utilities & public works projects.' },
-  { icon: '📊', title: 'Project Management', desc: 'End-to-end management ensuring timelines & budgets.' },
+  { icon: HomeIcon, title: 'Residential', desc: 'Custom homes, villas & apartments built with premium materials.' },
+  { icon: Building2, title: 'Commercial', desc: 'Office buildings, retail centers & industrial facilities.' },
+  { icon: Wrench, title: 'Renovation', desc: 'Transform your space with expert remodeling services.' },
+  { icon: DraftingCompass, title: 'Design & Engineering', desc: 'Architectural design, structural engineering & planning.' },
+  { icon: Road, title: 'Infrastructure', desc: 'Roads, bridges, utilities & public works projects.' },
+  { icon: BarChart3, title: 'Project Management', desc: 'End-to-end management ensuring timelines & budgets.' },
 ];
 
 function ChannelVideos() {
@@ -27,7 +29,7 @@ function ChannelVideos() {
     fetch('/api/youtube/videos?limit=6')
       .then(r => r.json())
       .then(json => { if (json.success) setVideos(json.data || []); })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false));
   }, []);
 
@@ -87,7 +89,7 @@ export default function Home() {
       const all = res.data.data || [];
       const highlights = all.filter(p => p.isHighlight);
       setFeaturedProjects(highlights.length > 0 ? highlights.slice(0, 3) : all.slice(0, 3));
-    }).catch(() => {});
+    }).catch(() => { });
   }, []);
 
   return (
@@ -111,7 +113,10 @@ export default function Home() {
             Building <span className="text-blue-400">Excellence</span><br />Delivering Trust
           </h1>
           <p className="text-lg text-gray-200 max-w-2xl mx-auto mb-8">
-            Rwanda's premier construction company — from residential homes to commercial complexes and major infrastructure projects since 2016.
+            Build Smarter. Build Better. Build with Elite.
+            Stop worrying about contractors who overpromise and underdeliver. Elite Construction brings precision, transparency, and top-tier craftsmanship to every project—from kitchen remodels to full commercial builds.
+
+            Your vision. Our expertise. Zero surprises.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/request-quote" className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all hover:scale-105">
@@ -124,33 +129,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* What We Do */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <span className="text-blue-600 font-semibold text-sm uppercase tracking-wider">Who We Are</span>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-2 mb-4">What We Do</h2>
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                Elite Construction is a full-service construction company delivering high-quality residential, commercial, and infrastructure projects across Rwanda. We combine modern engineering with local expertise to build structures that last.
-              </p>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                From the first blueprint to the final handover, our team of licensed engineers, architects, and project managers ensures every project is delivered on time, within budget, and to the highest standards.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {['ISO Certified', 'Licensed Engineers', '10+ Years Experience', 'Rwanda-Based'].map(tag => (
-                  <span key={tag} className="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full">{tag}</span>
-                ))}
-              </div>
-              <Link to="/about" className="inline-block mt-6 text-blue-600 font-semibold hover:underline">Learn more about us →</Link>
-            </div>
-            <div>
-              <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80" alt="Construction team"
-                className="rounded-2xl shadow-xl w-full object-cover h-80" />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Who We Are — layered dark showcase */}
+      <AboutShowcase />
 
       {/* Services */}
       <section className="py-16 bg-gray-50">
@@ -163,7 +143,7 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-6">
             {services.map((s, i) => (
               <div key={i} className="group bg-white p-6 rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-                <div className="text-3xl mb-3">{s.icon}</div>
+                <div className="flex justify-center mb-3"><s.icon className="w-8 h-8 text-blue-600" /></div>
                 <h3 className="font-semibold text-gray-900 mb-2">{s.title}</h3>
                 <p className="text-sm text-gray-600">{s.desc}</p>
               </div>
@@ -177,42 +157,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Projects — live from DB */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="text-blue-600 font-semibold text-sm uppercase tracking-wider">Portfolio</span>
-            <h2 className="text-3xl font-bold text-gray-900 mt-2">Featured Projects</h2>
-          </div>
-          {featuredProjects.length > 0 ? (
-            <div className="grid md:grid-cols-3 gap-6">
-              {featuredProjects.map(p => (
-                <Link key={p._id} to={`/projects/${p.slug || p._id}`}
-                  className="group bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  <div className="overflow-hidden h-48">
-                    <img src={p.coverImage || FALLBACK_IMG} alt={p.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onError={e => { e.target.src = FALLBACK_IMG; }} />
-                  </div>
-                  <div className="p-5">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-blue-600 uppercase">{p.category || 'General'}</span>
-                      {p.location && <span className="text-xs text-gray-500">📍 {p.location}</span>}
-                    </div>
-                    <h3 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{p.name}</h3>
-                    {p.description && <p className="text-gray-500 text-sm mt-1 line-clamp-2">{p.description}</p>}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <p className="text-center text-gray-400 py-8">No featured projects yet. Add projects in the admin and mark them as highlights.</p>
-          )}
-          <div className="text-center mt-8">
-            <Link to="/projects" className="text-blue-600 font-semibold hover:underline">View All Projects →</Link>
-          </div>
-        </div>
-      </section>
+      {/* Featured Projects — horizontal showcase */}
+      <ProjectsSection
+        title="Featured Projects"
+        subtitle="A curated selection of our latest work — scroll to explore."
+        eyebrow="Portfolio"
+        viewAllLink="/projects"
+        emptyMessage="No featured projects yet. Add projects in the admin and mark them as highlights."
+        projects={toProjectCards(featuredProjects)}
+      />
 
       {/* YouTube Channel */}
       <section className="py-16 bg-gray-900">

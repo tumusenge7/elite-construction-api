@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Mail, MailOpen, Trash2, Loader2, RefreshCw, MessageSquare } from 'lucide-react';
 import api from '../../services/api';
 
@@ -8,7 +8,7 @@ export default function AdminMessages() {
   const [selected, setSelected] = useState(null);
   const [filter, setFilter] = useState('all');
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     setLoading(true);
     try {
       const params = filter === 'unread' ? { is_read: false } : filter === 'read' ? { is_read: true } : {};
@@ -17,9 +17,9 @@ export default function AdminMessages() {
     } catch {} finally {
       setLoading(false);
     }
-  };
+  }, [filter]);
 
-  useEffect(() => { fetchMessages(); }, [filter]);
+  useEffect(() => { fetchMessages(); }, [fetchMessages]);
 
   const markRead = async (msg) => {
     if (msg.isRead) return;

@@ -19,6 +19,9 @@ const serviceSchema = new mongoose.Schema({
   image: {
     type: String
   },
+  videoUrl: {
+    type: String
+  },
   description: {
     type: String
   },

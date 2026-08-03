@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Search, Plus, Mail, Phone, MoreHorizontal, Briefcase, Loader2, Edit3, Trash2, X, Check } from 'lucide-react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Search, Plus, Briefcase, Loader2, Edit3, Trash2, X } from 'lucide-react';
 import { crud } from '../../services/api';
 
 export default function AdminEmployees() {
@@ -7,13 +7,13 @@ export default function AdminEmployees() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [modal, setModal] = useState(null);
-  const api = crud('employees');
+  const api = useMemo(() => crud('employees'), []);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try { const res = await api.list({ limit: 100 }); setData(res.data.data || []); } catch {} finally { setLoading(false); }
-  };
+  }, [api]);
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   const filtered = data.filter(e =>
     `${e.firstName || ''} ${e.lastName || ''}`.toLowerCase().includes(search.toLowerCase()) ||
@@ -74,7 +74,7 @@ export default function AdminEmployees() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((e, i) => (
+              {filtered.map((e) => (
                 <tr key={e._id} className="border-t border-gray-100 hover:bg-[#3b82f6]/5 transition-all cursor-default">
                   <td className="px-4 py-3 font-medium text-[#1a3a5c]">{e.employeeCode || '-'}</td>
                   <td className="px-4 py-3">

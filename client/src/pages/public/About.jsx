@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 export default function About() {
   return (
     <>
@@ -21,7 +19,7 @@ export default function About() {
               <p className="text-gray-600 mb-4">To deliver exceptional construction services that exceed client expectations through quality craftsmanship, innovation, and integrity.</p>
               <p className="text-gray-600">We believe in building long-term relationships with our clients by being transparent, reliable, and committed to excellence in every project we undertake.</p>
             </div>
-            <div className="bg-gray-100 rounded-lg h-80 flex items-center justify-center text-gray-400">Image Placeholder</div>
+            <img src="/uploads/ourservices.jpg" alt="Elite Construction services" className="w-full h-80 object-cover rounded-lg" />
           </div>
         </div>
       </section>
@@ -77,7 +75,7 @@ export default function About() {
               <div className="w-16 h-16 bg-blue-100 rounded-full mb-4"></div>
               <h3 className="font-semibold text-gray-900">David Mugisha</h3>
               <p className="text-sm text-blue-600">CEO & Founder</p>
-              <p className="text-sm text-gray-600 mt-2">Over 20 years of experience in construction in East Africa.</p>
+              <p className="text-sm text-gray-600 mt-2">Over 200 years of experience in construction in East Africa.</p>
             </div>
             <div className="p-6 border border-gray-100 rounded-lg">
               <div className="w-16 h-16 bg-blue-100 rounded-full mb-4"></div>
@@ -87,7 +85,7 @@ export default function About() {
             </div>
             <div className="p-6 border border-gray-100 rounded-lg">
               <div className="w-16 h-16 bg-blue-100 rounded-full mb-4"></div>
-              <h3 className="font-semibold text-gray-900">Patrick Nsengimana</h3>
+              <h3 className="font-semibold text-gray-900">tumusenge blaise</h3>
               <p className="text-sm text-blue-600">Head of Engineering</p>
               <p className="text-sm text-gray-600 mt-2">Licensed civil engineer in structural design.</p>
             </div>

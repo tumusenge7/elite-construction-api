@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Save, Settings as SettingsIcon, Smartphone, Shield, Trash2, Loader2 } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Save, Smartphone, Shield, Trash2, Loader2 } from 'lucide-react';
 import { crud } from '../../services/api';
 
 export default function AdminSettings() {
@@ -13,7 +13,7 @@ export default function AdminSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const api = crud('settings');
+  const api = useMemo(() => crud('settings'), []);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -30,7 +30,7 @@ export default function AdminSettings() {
       } catch {} finally { setLoading(false); }
     };
     fetchAll();
-  }, []);
+  }, [api]);
 
   const handleChange = (e) => setSettings({ ...settings, [e.target.name]: e.target.value });
 

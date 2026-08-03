@@ -4,10 +4,12 @@ const { z } = require('zod');
 const User = require('../models/User');
 const Role = require('../models/Role');
 const Session = require('../models/Session');
+const Customer = require('../models/Customer');
 const config = require('../config');
 const { success, error } = require('../utils/response');
 const { logAudit } = require('../utils/audit');
 const { createNotification } = require('../utils/notifications');
+const { validateEmailSyntax, validatePhone, sanitizeInput } = require('../utils/validation');
 
 const registerSchema = z.object({
   email: z.string().email('Invalid email'),
@@ -23,9 +25,43 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
+const MAX_FAILED_ATTEMPTS = 5;
+const LOCK_DURATION_MS = 15 * 60 * 1000;
+
+const createSessionRecord = async (user, token, req) => {
+  await Session.create({
+    user: user._id,
+    token,
+    ipAddress: req.ip || req.connection?.remoteAddress,
+    userAgent: req.headers['user-agent'],
+    device: req.headers['user-agent']?.substring(0, 200),
+    expiresAt: new Date(Date.now() + config.jwt.expiresInMs),
+  });
+};
+
 exports.register = async (req, res, next) => {
   try {
     const data = registerSchema.parse(req.body);
+
+    // Sanitize inputs
+    data.first_name = sanitizeInput(data.first_name);
+    data.last_name = sanitizeInput(data.last_name);
+
+    // Email syntax validation
+    const emailCheck = validateEmailSyntax(data.email);
+    if (!emailCheck.valid) {
+      return error(res, emailCheck.error, 400);
+    }
+
+    // Phone validation (if provided)
+    if (data.phone) {
+      const phoneCheck = validatePhone(data.phone);
+      if (!phoneCheck.valid) {
+        return error(res, phoneCheck.error, 400);
+      }
+      data.phone = phoneCheck.phone; // use normalized form
+    }
+
     const hashedPassword = await bcrypt.hash(data.password, 12);
 
     const existing = await User.findOne({ email: data.email });
@@ -42,12 +78,21 @@ exports.register = async (req, res, next) => {
       role: data.role_id || null,
     });
 
+    // Auto-create a Customer record so project/quote scoping works immediately
+    await Customer.create({
+      user: user._id,
+      phone: data.phone || null,
+      status: 'lead',
+    }).catch(() => {}); // silent — don't fail registration if this errors
+
     const role = data.role_id ? await Role.findById(data.role_id) : null;
     const token = jwt.sign(
       { id: user._id, email: user.email, role: role?.name || null },
       config.jwt.secret,
       { expiresIn: config.jwt.expiresIn }
     );
+
+    await createSessionRecord(user, token, req);
 
     await logAudit(user._id, 'user_registered', 'User', user._id, 'User registered');
 
@@ -87,12 +132,29 @@ exports.login = async (req, res, next) => {
       return error(res, 'Account is not active', 403);
     }
 
+    if (user.lockUntil && user.lockUntil > new Date()) {
+      const mins = Math.ceil((user.lockUntil - new Date()) / 60000);
+      return error(res, `Too many failed attempts. Account locked. Try again in ${mins} minute(s).`, 429);
+    }
+
     const validPassword = await bcrypt.compare(data.password, user.password);
     if (!validPassword) {
+      user.failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;
+      if (user.failedLoginAttempts >= MAX_FAILED_ATTEMPTS) {
+        user.lockUntil = new Date(Date.now() + LOCK_DURATION_MS);
+        user.failedLoginAttempts = 0;
+        await user.save();
+        await logAudit(user._id, 'account_locked', 'User', user._id, 'Account locked after repeated failed attempts', req);
+        return error(res, 'Too many failed attempts. Account locked for 15 minutes.', 429);
+      }
+      await user.save();
+      await logAudit(user._id, 'login_failed', 'User', user._id, `Failed login attempt (${user.failedLoginAttempts}/${MAX_FAILED_ATTEMPTS})`, req);
       return error(res, 'Invalid email or password', 401);
     }
 
     user.lastLoginAt = new Date();
+    user.failedLoginAttempts = 0;
+    user.lockUntil = null;
     await user.save();
 
     const roleName = user.role?.name || null;
@@ -102,15 +164,7 @@ exports.login = async (req, res, next) => {
       { expiresIn: config.jwt.expiresIn }
     );
 
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    await Session.create({
-      user: user._id,
-      token,
-      ipAddress: req.ip || req.connection?.remoteAddress,
-      userAgent: req.headers['user-agent'],
-      device: req.headers['user-agent']?.substring(0, 200),
-      expiresAt,
-    });
+    await createSessionRecord(user, token, req);
 
     await logAudit(user._id, 'user_login', 'User', user._id, 'User logged in', req);
 
@@ -202,6 +256,13 @@ exports.changePassword = async (req, res, next) => {
 
     user.password = await bcrypt.hash(new_password, 12);
     await user.save();
+
+    const authHeader = req.headers.authorization;
+    const currentToken = authHeader?.split(' ')[1];
+    await Session.updateMany(
+      { user: user._id, isActive: true, token: { $ne: currentToken } },
+      { isActive: false }
+    );
 
     await logAudit(req.user.id, 'password_changed', 'User', req.user.id, 'Password changed', req);
 

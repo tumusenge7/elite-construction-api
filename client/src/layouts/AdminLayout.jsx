@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Users, HardHat, FileText, Receipt, Settings, LogOut, Menu, X, Bell, BellRing, Search, Briefcase, MessageSquare, Grid, CheckCheck,
+  LayoutDashboard, Users, HardHat, FileText, Receipt, Settings, LogOut, Menu, X, Bell, BellRing, Search, Briefcase, MessageSquare, Grid, CheckCheck, Activity, Layers,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -15,6 +15,8 @@ const sidebarLinks = [
   { name: 'Services', path: '/admin/services', icon: Grid },
   { name: 'Messages', path: '/admin/messages', icon: MessageSquare },
   { name: 'Notifications', path: '/admin/notifications', icon: BellRing },
+  { name: 'Activity Logs', path: '/admin/activity-logs', icon: Activity },
+  { name: 'All Things', path: '/admin/all-things', icon: Layers },
   { name: 'Settings', path: '/admin/settings', icon: Settings },
 ];
 

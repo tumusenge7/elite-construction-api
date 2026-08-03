@@ -157,15 +157,28 @@ const uploadRoutes = require('./routes/uploads');
 const contactRoutes = require('./routes/contact');
 const estimatorRoutes = require('./routes/estimator');
 const youtubeRoutes = require('./routes/youtube');
+const activityLogsRoutes = require('./routes/activityLogs');
+const activityTracker = require('./middleware/activityTracker');
+const validateRoutes = require('./routes/validate');
+const projectRequestRoutes = require('./routes/projectRequests');
+const teamMemberRoutes = require('./routes/teamMembers');
 
 const app = express();
+
+app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({ origin: config.clientUrl, credentials: true }));
 app.use(morgan(config.isDev ? 'dev' : 'combined'));
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Refuse to start in production with the default/known JWT secret
+if (config.isProd && config.jwt.secret === 'default_secret_change_me') {
+  console.error('❌ Refusing to start in production with the default JWT_SECRET. Set a strong JWT_SECRET in server/.env');
+  process.exit(1);
+}
 
 // Rate limiting
 const limiter = rateLimit({
@@ -177,6 +190,9 @@ app.use('/api', limiter);
 
 // Static files
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+
+// Activity tracker — logs all API requests
+app.use(activityTracker);
 
 // ============================================
 // ✅ ROOT ROUTE - FIXES THE 404 ERROR
@@ -233,6 +249,10 @@ app.use('/api/uploads', uploadRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/estimator', estimatorRoutes);
 app.use('/api/youtube', youtubeRoutes);
+app.use('/api/activity-logs', activityLogsRoutes);
+app.use('/api/validate', validateRoutes);
+app.use('/api/project-requests', projectRequestRoutes);
+app.use('/api/team-members', teamMemberRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

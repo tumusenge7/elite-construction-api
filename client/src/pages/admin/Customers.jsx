@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Search, Plus, Users, Loader2, Edit3, Trash2, X } from 'lucide-react';
 import { crud } from '../../services/api';
 
@@ -7,13 +7,13 @@ export default function AdminCustomers() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [modal, setModal] = useState(null);
-  const api = crud('customers');
+  const api = useMemo(() => crud('customers'), []);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try { const res = await api.list({ limit: 100 }); setData(res.data.data || []); } catch {} finally { setLoading(false); }
-  };
+  }, [api]);
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   const filtered = data.filter(c =>
     (c.companyName || '').toLowerCase().includes(search.toLowerCase()) ||
@@ -70,7 +70,7 @@ export default function AdminCustomers() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((c, i) => (
+              {filtered.map((c) => (
                 <tr key={c._id} className="border-t border-gray-100 hover:bg-[#3b82f6]/5 transition-all cursor-default">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">

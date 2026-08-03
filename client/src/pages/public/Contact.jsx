@@ -1,8 +1,13 @@
 import { useState } from 'react';
+import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { contact } from '../../services/api';
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
+  const [form, setForm] = useState({
+    name: '', email: '', phone: '',
+    subject: '',
+    message: ''
+  });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -41,13 +46,13 @@ export default function Contact() {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
               <div className="space-y-5">
                 {[
-                  { icon: '📍', label: 'Address', value: 'KG 123 Ave, Kacyiru, Kigali, Rwanda' },
-                  { icon: '📞', label: 'Phone', value: '+250 788 000 000' },
-                  { icon: '✉️', label: 'Email', value: 'info@eliteconstruction.com' },
-                  { icon: '🕐', label: 'Working Hours', value: 'Mon–Fri: 7:00 AM – 5:00 PM\nSat: 8:00 AM – 12:00 PM' },
+                  { icon: MapPin, label: 'Address', value: 'KG 123 Ave, Kacyiru, Kigali, Rwanda' },
+                  { icon: Phone, label: 'Phone', value: '+250 790122828' },
+                  { icon: Mail, label: 'Email', value: 'blaisejavi7@gmail.com' },
+                  { icon: Clock, label: 'Working Hours', value: 'Mon–Fri: 7:00 AM – 5:00 PM\nSat: 8:00 AM – 12:00 PM' },
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 hover:bg-blue-50 transition-colors duration-200">
-                    <span className="text-2xl">{item.icon}</span>
+                    <item.icon className="w-6 h-6 text-blue-600 mt-0.5" />
                     <div>
                       <p className="font-semibold text-gray-900">{item.label}</p>
                       <p className="text-sm text-gray-600 whitespace-pre-line">{item.value}</p>
@@ -67,7 +72,7 @@ export default function Contact() {
             <div>
               {submitted ? (
                 <div className="bg-green-50 border border-green-200 rounded-2xl p-10 text-center">
-                  <div className="text-5xl mb-4">✅</div>
+                  <div className="text-5xl mb-4"></div>
                   <h3 className="text-xl font-bold text-green-800">Message Sent!</h3>
                   <p className="text-sm text-green-600 mt-2">Thank you for reaching out. We'll get back to you within 24 hours.</p>
                   <button onClick={() => { setSubmitted(false); setForm({ name: '', email: '', phone: '', subject: '', message: '' }); }}
@@ -82,7 +87,7 @@ export default function Contact() {
                         className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors" />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">Email *</label>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Email</label>
                       <input type="email" name="email" value={form.email} onChange={handleChange} required
                         className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors" />
                     </div>
@@ -93,12 +98,12 @@ export default function Contact() {
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Subject *</label>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Subject </label>
                     <input type="text" name="subject" value={form.subject} onChange={handleChange} required
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Message *</label>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Message </label>
                     <textarea name="message" rows={5} value={form.message} onChange={handleChange} required
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors resize-none" />
                   </div>

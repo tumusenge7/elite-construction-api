@@ -6,11 +6,6 @@ const myQuotes = [
   { id: '#Q002', project: 'Home Extension', amount: '$85,000', status: 'Approved', date: '2026-07-22', validUntil: '2026-08-22' },
 ];
 
-const container = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.12 } },
-};
-
 const cardAnim = {
   hidden: { opacity: 0, y: 20, scale: 0.97 },
   show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 100, damping: 14 } },
@@ -45,7 +40,7 @@ export default function CustomerQuotes() {
       </div>
 
       <div className="space-y-4">
-        {filtered.map((q, i) => (
+        {filtered.map((q) => (
           <div key={q.id} variants={cardAnim} whileHover={{ y: -3, boxShadow: '0 12px 30px -8px rgba(0,0,0,0.1)' }} className="bg-white rounded-xl border border-gray-200 p-5 cursor-default">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3">

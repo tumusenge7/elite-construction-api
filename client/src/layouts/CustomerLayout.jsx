@@ -1,21 +1,32 @@
 import { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import {
-  LayoutDashboard, HardHat, FileText, Receipt, LogOut, Menu, X, Bell,
+  LayoutDashboard, HardHat, FileText, Receipt, LogOut, Menu, X, Bell, UserCircle, PlusCircle,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const sidebarLinks = [
   { name: 'Dashboard', path: '/customer', icon: LayoutDashboard },
   { name: 'My Projects', path: '/customer/projects', icon: HardHat },
+  { name: 'Request Project', path: '/customer/request-project', icon: PlusCircle },
   { name: 'My Quotes', path: '/customer/quotes', icon: FileText },
   { name: 'Invoices', path: '/customer/invoices', icon: Receipt },
+  { name: 'My Profile', path: '/customer/profile', icon: UserCircle },
 ];
 
 export default function CustomerLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // While auth is loading, show nothing
+  if (loading) return null;
+
+  // Not logged in — redirect to login with the intended path
+  if (!user) {
+    return <Navigate to={`/login?redirect=${encodeURIComponent(location.pathname + location.search)}&reason=auth_required`} replace />;
+  }
 
   const handleLogout = () => {
     logout();
@@ -79,10 +90,12 @@ export default function CustomerLayout() {
             </button>
             <div className="flex items-center gap-2 pl-3 border-l border-gray-200">
               <div className="w-8 h-8 bg-[#1a3a5c] rounded-full flex items-center justify-center text-white text-xs font-bold">
-                {user?.name?.charAt(0) || 'C'}
+                {(user?.first_name || user?.name || 'C').charAt(0).toUpperCase()}
               </div>
               <div className="hidden sm:block">
-                <p className="text-sm font-medium text-gray-800">{user?.name || 'Customer'}</p>
+                <p className="text-sm font-medium text-gray-800">
+                  {user?.first_name ? `${user.first_name} ${user.last_name || ''}`.trim() : (user?.name || 'Customer')}
+                </p>
                 <p className="text-xs text-gray-500">Customer</p>
               </div>
             </div>
