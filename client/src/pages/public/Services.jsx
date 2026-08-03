@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Link } from 'react-router-dom';
 
 const fallbackServices = [
@@ -67,7 +68,7 @@ export default function Services() {
 
   useEffect(() => {
     let mounted = true;
-    fetch('/api/services/with-images?status=active')
+    fetch(API_BASE_URL + '/api/services/with-images?status=active')
       .then(r => r.json())
       .then(json => {
         if (!mounted) return;

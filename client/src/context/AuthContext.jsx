@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 import { auth as authApi } from '../services/api';
 
 const AuthContext = createContext(null);
@@ -31,7 +32,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (payload) => {
-    const res = await fetch('/api/auth/register', {
+    const res = await fetch(API_BASE_URL + '/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -52,7 +53,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      await fetch(API_BASE_URL + '/api/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
     } catch {} finally {
       localStorage.removeItem('token');
       localStorage.removeItem('user');

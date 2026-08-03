@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Loader2, Trash2, Plus } from 'lucide-react';
 
 const empty = { name: '', category: '', serialNumber: '', status: 'available', location: '', notes: '' };
@@ -14,14 +15,14 @@ export default function AdminEquipment() {
 
   const fetch_ = () => {
     setLoading(true);
-    fetch('/api/equipment', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(API_BASE_URL + '/api/equipment', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(j => setItems(j.data || [])).catch(() => {}).finally(() => setLoading(false));
   };
   useEffect(fetch_, [token]);
 
   const save = async (e) => {
     e.preventDefault(); setSaving(true);
-    const res = await fetch('/api/equipment', {
+    const res = await fetch(API_BASE_URL + '/api/equipment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(form),
@@ -33,7 +34,7 @@ export default function AdminEquipment() {
 
   const del = async (id) => {
     if (!confirm('Delete?')) return;
-    await fetch(`/api/equipment/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    await fetch(API_BASE_URL + `/api/equipment/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
     fetch_();
   };
 

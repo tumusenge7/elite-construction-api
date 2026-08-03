@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Loader2, Trash2, Plus } from 'lucide-react';
 
 const empty = { firstName: '', lastName: '', email: '', password: '', phone: '' };
@@ -14,14 +15,14 @@ export default function AdminUsers() {
 
   const fetch_ = () => {
     setLoading(true);
-    fetch('/api/users', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(API_BASE_URL + '/api/users', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(j => setItems(j.data || [])).catch(() => {}).finally(() => setLoading(false));
   };
   useEffect(fetch_, [token]);
 
   const save = async (e) => {
     e.preventDefault(); setSaving(true); setError('');
-    const res = await fetch('/api/users', {
+    const res = await fetch(API_BASE_URL + '/api/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(form),
@@ -33,7 +34,7 @@ export default function AdminUsers() {
 
   const del = async (id) => {
     if (!confirm('Delete this user?')) return;
-    await fetch(`/api/users/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    await fetch(API_BASE_URL + `/api/users/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
     fetch_();
   };
 

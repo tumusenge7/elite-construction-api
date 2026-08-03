@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { useParams, Link } from 'react-router-dom';
 import { CreditCard, Smartphone, Landmark, Banknote, Check, Loader2, FileText, ChevronRight } from 'lucide-react';
 
@@ -23,7 +24,7 @@ export default function PayInvoice() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch(`/api/invoices/pay/${invoiceNumber}`);
+        const res = await fetch(API_BASE_URL + `/api/invoices/pay/${invoiceNumber}`);
         const json = await res.json();
         if (!json.success) throw new Error(json.message || 'Invoice not found');
         setInvoice(json.data);
@@ -41,7 +42,7 @@ export default function PayInvoice() {
     if (!selected) return;
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/invoices/pay/${invoiceNumber}`, {
+      const res = await fetch(API_BASE_URL + `/api/invoices/pay/${invoiceNumber}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ method: selected, transactionId: ref }),

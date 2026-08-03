@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Loader2, Trash2 } from 'lucide-react';
 
 export default function AdminTasks() {
@@ -8,7 +9,7 @@ export default function AdminTasks() {
 
   const fetchTasks = () => {
     setLoading(true);
-    fetch('/api/tasks', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(API_BASE_URL + '/api/tasks', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
       .then(j => setTasks(j.data || []))
       .catch(() => {})
@@ -19,7 +20,7 @@ export default function AdminTasks() {
 
   const del = async (id) => {
     if (!confirm('Delete this task?')) return;
-    await fetch(`/api/tasks/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    await fetch(API_BASE_URL + `/api/tasks/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
     fetchTasks();
   };
 

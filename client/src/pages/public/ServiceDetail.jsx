@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../../config/api';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 
@@ -94,7 +95,7 @@ export default function ServiceDetail() {
     setGallery([]);
     setActiveImage(null);
     setService(null);
-    fetch(`/api/services/${slug}`)
+    fetch(API_BASE_URL + `/api/services/${slug}`)
       .then(r => r.json())
       .then(json => {
         if (!mounted) return;
@@ -109,7 +110,7 @@ export default function ServiceDetail() {
             image: s.image || null,
             videoUrl: s.videoUrl || null,
           });
-          fetch(`/api/services/${slug}/images`)
+          fetch(API_BASE_URL + `/api/services/${slug}/images`)
             .then(r => r.json())
             .then(imgJson => {
               if (!mounted) return;

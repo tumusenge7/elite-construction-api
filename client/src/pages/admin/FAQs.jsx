@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Loader2, Trash2, Plus, Pencil } from 'lucide-react';
 
 const empty = { question: '', answer: '', category: '', order: 0 };
@@ -14,7 +15,7 @@ export default function AdminFAQs() {
 
   const fetch_ = () => {
     setLoading(true);
-    fetch('/api/faqs', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(API_BASE_URL + '/api/faqs', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(j => setItems(j.data || [])).catch(() => {}).finally(() => setLoading(false));
   };
   useEffect(fetch_, [token]);
@@ -34,7 +35,7 @@ export default function AdminFAQs() {
 
   const del = async (id) => {
     if (!confirm('Delete?')) return;
-    await fetch(`/api/faqs/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    await fetch(API_BASE_URL + `/api/faqs/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
     fetch_();
   };
 

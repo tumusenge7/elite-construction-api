@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Search, HardHat, MapPin, Calendar, Loader2, ClipboardList, PlusCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -56,8 +57,8 @@ export default function CustomerProjects() {
   useEffect(() => {
     const headers = { Authorization: `Bearer ${token}` };
     Promise.all([
-      fetch('/api/projects', { headers }).then(r => r.json()),
-      fetch('/api/project-requests', { headers }).then(r => r.json()),
+      fetch(API_BASE_URL + '/api/projects', { headers }).then(r => r.json()),
+      fetch(API_BASE_URL + '/api/project-requests', { headers }).then(r => r.json()),
     ])
       .then(([p, pr]) => {
         setProjects(p.data || []);

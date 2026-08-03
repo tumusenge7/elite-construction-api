@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Loader2, Search, RefreshCw, Monitor, Users, TrendingUp } from 'lucide-react';
 
 const EVENT_TYPES = ['', 'page_view', 'api_request', 'click', 'login', 'logout', 'error'];
@@ -29,7 +30,7 @@ export default function ActivityLogs() {
     if (filters.dateTo) params.set('dateTo', filters.dateTo);
 
     try {
-      const res = await fetch(`/api/activity-logs?${params}`, {
+      const res = await fetch(API_BASE_URL + `/api/activity-logs?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const json = await res.json();

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Search, Plus, Grid, Loader2, Edit3, Trash2, X, Image as ImageIcon, Upload, ArrowUp, ArrowDown, Star, Check } from 'lucide-react';
 import { crud } from '../../services/api';
 
@@ -33,9 +34,9 @@ export default function AdminServices() {
     if (confirm('Delete this service?')) {
       try {
         await api.delete(id);
-        fetch(`/api/services/${id}/images`).then(r => r.json()).then(json => {
+        fetch(API_BASE_URL + `/api/services/${id}/images`).then(r => r.json()).then(json => {
           (json.data || []).forEach(img => {
-            fetch(`/api/services/images/${img._id}`, {
+            fetch(API_BASE_URL + `/api/services/images/${img._id}`, {
               method: 'DELETE',
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
@@ -140,7 +141,7 @@ function ImageManager({ service, onClose, onSaved }) {
 
   const loadImages = useCallback(async () => {
     try {
-      const res = await fetch(`/api/services/${service._id}/images`);
+      const res = await fetch(API_BASE_URL + `/api/services/${service._id}/images`);
       const json = await res.json();
       setImages(json.data || []);
     } catch {} finally { setLoading(false); }
@@ -155,7 +156,7 @@ function ImageManager({ service, onClose, onSaved }) {
     try {
       const fd = new FormData();
       files.forEach(f => fd.append('files', f));
-      const res = await fetch('/api/uploads/multiple?category=services', {
+      const res = await fetch(API_BASE_URL + '/api/uploads/multiple?category=services', {
         method: 'POST',
         headers: authHeaders,
         body: fd,
@@ -171,7 +172,7 @@ function ImageManager({ service, onClose, onSaved }) {
     if (!pending.length || saving) return;
     setSaving(true);
     try {
-      const res = await fetch(`/api/services/${service._id}/images`, {
+      const res = await fetch(API_BASE_URL + `/api/services/${service._id}/images`, {
         method: 'POST',
         headers: { ...authHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify(pending.map(p => ({ image: p.image, caption: p.caption }))),
@@ -188,7 +189,7 @@ function ImageManager({ service, onClose, onSaved }) {
 
   const updateImage = async (id, data) => {
     try {
-      await fetch(`/api/services/images/${id}`, {
+      await fetch(API_BASE_URL + `/api/services/images/${id}`, {
         method: 'PUT',
         headers: { ...authHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -200,7 +201,7 @@ function ImageManager({ service, onClose, onSaved }) {
   const deleteImage = async (id) => {
     if (!confirm('Delete this image?')) return;
     try {
-      await fetch(`/api/services/images/${id}`, { method: 'DELETE', headers: authHeaders });
+      await fetch(API_BASE_URL + `/api/services/images/${id}`, { method: 'DELETE', headers: authHeaders });
       loadImages();
     } catch {}
   };
@@ -212,7 +213,7 @@ function ImageManager({ service, onClose, onSaved }) {
     [next[index], next[target]] = [next[target], next[index]];
     setImages(next);
     try {
-      await fetch(`/api/services/${service._id}/images/reorder`, {
+      await fetch(API_BASE_URL + `/api/services/${service._id}/images/reorder`, {
         method: 'PUT',
         headers: { ...authHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({ order: next.map(i => i._id) }),
@@ -222,7 +223,7 @@ function ImageManager({ service, onClose, onSaved }) {
 
   const setCoverImage = async (img) => {
     try {
-      await fetch(`/api/services/${service._id}`, {
+      await fetch(API_BASE_URL + `/api/services/${service._id}`, {
         method: 'PUT',
         headers: { ...authHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: img.image }),
@@ -339,7 +340,7 @@ function ServiceForm({ service, onSave, onClose }) {
     const fd = new FormData();
     fd.append('file', file);
     try {
-      const res = await fetch('/api/uploads?category=services', {
+      const res = await fetch(API_BASE_URL + '/api/uploads?category=services', {
         method: 'POST',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: fd,

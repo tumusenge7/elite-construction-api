@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 /**
  * useFieldValidation — debounced async field validator
@@ -52,7 +53,7 @@ export function useFieldValidation(value, type, delay = 600) {
       abortRef.current = new AbortController();
 
       try {
-        const res = await fetch(`/api/validate/${type}`, {
+        const res = await fetch(API_BASE_URL + `/api/validate/${type}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ [type]: trimmed }),

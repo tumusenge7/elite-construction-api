@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { User, Lock, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -33,7 +34,7 @@ export default function CustomerProfile() {
     e.preventDefault();
     setProfileStatus({ loading: true, success: '', error: '' });
     try {
-      const res = await fetch('/api/auth/profile', {
+      const res = await fetch(API_BASE_URL + '/api/auth/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(profile),
@@ -59,7 +60,7 @@ export default function CustomerProfile() {
     }
     setPwStatus({ loading: true, success: '', error: '' });
     try {
-      const res = await fetch('/api/auth/change-password', {
+      const res = await fetch(API_BASE_URL + '/api/auth/change-password', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ current_password: passwords.current_password, new_password: passwords.new_password }),

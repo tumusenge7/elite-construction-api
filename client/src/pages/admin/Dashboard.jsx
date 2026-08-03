@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Link } from 'react-router-dom';
 import { Loader2, HardHat, Users, FileText, Receipt, Briefcase, Grid, MessageSquare } from 'lucide-react';
 
@@ -10,7 +11,7 @@ export default function AdminDashboard() {
   const [activeVideo, setActiveVideo] = useState(null);
 
   useEffect(() => {
-    fetch('/api/youtube/videos?limit=8')
+    fetch(API_BASE_URL + '/api/youtube/videos?limit=8')
       .then(r => r.json())
       .then(json => { if (json.success) setYoutubeVideos(json.data || []); })
       .catch(() => {})
@@ -19,7 +20,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     let mounted = true;
-    fetch('/api/services/with-images?status=active')
+    fetch(API_BASE_URL + '/api/services/with-images?status=active')
       .then(r => r.json())
       .then(json => {
         if (mounted) {

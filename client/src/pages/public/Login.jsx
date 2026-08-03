@@ -30,7 +30,7 @@ export default function Login() {
         navigate('/customer', { replace: true });
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password.');
+      setError(err.response?.data?.message || err.message || 'Unable to reach the server. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }

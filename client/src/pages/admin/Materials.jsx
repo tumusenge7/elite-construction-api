@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Loader2, Trash2, Plus } from 'lucide-react';
 
 const empty = { name: '', unit: '', unitCost: '', category: '', description: '' };
@@ -14,7 +15,7 @@ export default function AdminMaterials() {
 
   const fetch_ = () => {
     setLoading(true);
-    fetch('/api/materials', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(API_BASE_URL + '/api/materials', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(j => setItems(j.data || [])).catch(() => {}).finally(() => setLoading(false));
   };
   useEffect(fetch_, [token]);
@@ -22,7 +23,7 @@ export default function AdminMaterials() {
   const save = async (e) => {
     e.preventDefault(); setSaving(true);
     const payload = { ...form, slug: toSlug(form.name) + '-' + Date.now(), unitCost: Number(form.unitCost) || 0 };
-    const res = await fetch('/api/materials', {
+    const res = await fetch(API_BASE_URL + '/api/materials', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(payload),
@@ -34,7 +35,7 @@ export default function AdminMaterials() {
 
   const del = async (id) => {
     if (!confirm('Delete?')) return;
-    await fetch(`/api/materials/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    await fetch(API_BASE_URL + `/api/materials/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
     fetch_();
   };
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Loader2, Trash2, Plus, Pencil } from 'lucide-react';
 
 const empty = { title: '', slug: '', excerpt: '', content: '', status: 'draft' };
@@ -14,7 +15,7 @@ export default function AdminBlog() {
 
   const fetch_ = () => {
     setLoading(true);
-    fetch('/api/blog', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(API_BASE_URL + '/api/blog', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(j => setItems(j.data || [])).catch(() => {}).finally(() => setLoading(false));
   };
   useEffect(fetch_, [token]);
@@ -34,7 +35,7 @@ export default function AdminBlog() {
 
   const del = async (id) => {
     if (!confirm('Delete?')) return;
-    await fetch(`/api/blog/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    await fetch(API_BASE_URL + `/api/blog/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
     fetch_();
   };
 

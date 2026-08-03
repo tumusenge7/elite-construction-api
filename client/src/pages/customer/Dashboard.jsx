@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { HardHat, FileText, Receipt, Clock, ArrowRight, Loader2, PlusCircle, ClipboardList } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -15,10 +16,10 @@ export default function CustomerDashboard() {
   useEffect(() => {
     const headers = { Authorization: `Bearer ${token}` };
     Promise.all([
-      fetch('/api/projects', { headers }).then(r => r.json()),
-      fetch('/api/project-requests', { headers }).then(r => r.json()),
-      fetch('/api/quotes', { headers }).then(r => r.json()),
-      fetch('/api/invoices', { headers }).then(r => r.json()),
+      fetch(API_BASE_URL + '/api/projects', { headers }).then(r => r.json()),
+      fetch(API_BASE_URL + '/api/project-requests', { headers }).then(r => r.json()),
+      fetch(API_BASE_URL + '/api/quotes', { headers }).then(r => r.json()),
+      fetch(API_BASE_URL + '/api/invoices', { headers }).then(r => r.json()),
     ]).then(([p, pr, q, i]) => {
       setProjects(p.data || []);
       setRequests(pr.data || []);

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Save, Smartphone, Shield, Trash2, Loader2 } from 'lucide-react';
 import { crud } from '../../services/api';
 
@@ -20,7 +21,7 @@ export default function AdminSettings() {
       try {
         const [sRes, sessRes] = await Promise.all([
           api.list({ limit: 50 }),
-          fetch('/api/sessions/mine', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then(r => r.json()),
+          fetch(API_BASE_URL + '/api/sessions/mine', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then(r => r.json()),
         ]);
         const items = sRes.data.data || [];
         const map = {};
@@ -48,7 +49,7 @@ export default function AdminSettings() {
 
   const terminateSession = async (id) => {
     try {
-      await fetch(`/api/sessions/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      await fetch(API_BASE_URL + `/api/sessions/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
       setSessions(prev => prev.filter(s => s._id !== id));
     } catch {}
   };

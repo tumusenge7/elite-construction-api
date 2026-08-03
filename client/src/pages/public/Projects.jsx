@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Link } from 'react-router-dom';
 import { contact } from '../../services/api';
 import { toProjectCards, FALLBACK_IMG } from '../../components/projects/projectsData';
@@ -36,7 +37,7 @@ export default function Projects() {
   const [playing, setPlaying] = useState(null);
 
   useEffect(() => {
-    fetch('/api/projects?limit=100')
+    fetch(API_BASE_URL + '/api/projects?limit=100')
       .then(r => r.json())
       .then(json => { setProjects(json.data || []); })
       .catch(() => {})
@@ -45,7 +46,7 @@ export default function Projects() {
 
   useEffect(() => {
     let mounted = true;
-    fetch('/api/services/with-images?status=active')
+    fetch(API_BASE_URL + '/api/services/with-images?status=active')
       .then(r => r.json())
       .then(json => {
         if (mounted) {
@@ -61,7 +62,7 @@ export default function Projects() {
   }, []);
 
   useEffect(() => {
-    fetch('/api/youtube/videos?limit=6')
+    fetch(API_BASE_URL + '/api/youtube/videos?limit=6')
       .then(r => r.json())
       .then(json => { if (json.success) setVideos(json.data || []); })
       .catch(() => {})

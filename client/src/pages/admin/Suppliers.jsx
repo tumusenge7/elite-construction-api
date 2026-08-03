@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Loader2, Trash2, Plus } from 'lucide-react';
 
 const empty = { name: '', email: '', phone: '', address: '', category: '' };
@@ -13,14 +14,14 @@ export default function AdminSuppliers() {
 
   const fetch_ = () => {
     setLoading(true);
-    fetch('/api/suppliers', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(API_BASE_URL + '/api/suppliers', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(j => setItems(j.data || [])).catch(() => {}).finally(() => setLoading(false));
   };
   useEffect(fetch_, [token]);
 
   const save = async (e) => {
     e.preventDefault(); setSaving(true);
-    await fetch('/api/suppliers', {
+    await fetch(API_BASE_URL + '/api/suppliers', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(form),
@@ -30,7 +31,7 @@ export default function AdminSuppliers() {
 
   const del = async (id) => {
     if (!confirm('Delete?')) return;
-    await fetch(`/api/suppliers/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    await fetch(API_BASE_URL + `/api/suppliers/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
     fetch_();
   };
 

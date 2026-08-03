@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from '../config/api';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, HardHat, FileText, Receipt, Settings, LogOut, Menu, X, Bell, BellRing, Search, Briefcase, MessageSquare, Grid, CheckCheck, Activity, Layers,
@@ -32,7 +33,7 @@ export default function AdminLayout() {
   useEffect(() => {
     const fetchNotifs = async () => {
       try {
-        const res = await fetch('/api/notifications/mine?limit=5', {
+        const res = await fetch(API_BASE_URL + '/api/notifications/mine?limit=5', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         const json = await res.json();
@@ -41,7 +42,7 @@ export default function AdminLayout() {
     };
     const fetchCount = async () => {
       try {
-        const res = await fetch('/api/notifications/unread-count', {
+        const res = await fetch(API_BASE_URL + '/api/notifications/unread-count', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         const json = await res.json();
@@ -64,7 +65,7 @@ export default function AdminLayout() {
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+      await fetch(API_BASE_URL + '/api/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
     } catch {} finally {
       logout();
       navigate('/login');
@@ -73,7 +74,7 @@ export default function AdminLayout() {
 
   const markNotifRead = async (n) => {
     try {
-      await fetch(`/api/notifications/${n._id}/read`, {
+      await fetch(API_BASE_URL + `/api/notifications/${n._id}/read`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
@@ -84,7 +85,7 @@ export default function AdminLayout() {
 
   const markAllNotifsRead = async () => {
     try {
-      await fetch('/api/notifications/read-all', {
+      await fetch(API_BASE_URL + '/api/notifications/read-all', {
         method: 'PUT',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });

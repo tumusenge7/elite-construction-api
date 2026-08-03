@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 
 export default function Team() {
   const [members, setMembers] = useState([]);
@@ -7,7 +8,7 @@ export default function Team() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('/api/team-members');
+        const res = await fetch(API_BASE_URL + '/api/team-members');
         const json = await res.json();
         setMembers(json.data || []);
       } catch {} finally {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Loader2, Trash2 } from 'lucide-react';
 
 export default function AdminPayments() {
@@ -8,14 +9,14 @@ export default function AdminPayments() {
 
   const fetch_ = () => {
     setLoading(true);
-    fetch('/api/payments', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(API_BASE_URL + '/api/payments', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(j => setItems(j.data || [])).catch(() => {}).finally(() => setLoading(false));
   };
   useEffect(fetch_, [token]);
 
   const del = async (id) => {
     if (!confirm('Delete?')) return;
-    await fetch(`/api/payments/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    await fetch(API_BASE_URL + `/api/payments/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
     fetch_();
   };
 

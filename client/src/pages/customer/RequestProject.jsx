@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { CheckCircle, PlusCircle, Loader2, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -32,7 +33,7 @@ export default function CustomerRequestProject() {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch('/api/project-requests', {
+      const res = await fetch(API_BASE_URL + '/api/project-requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(form),

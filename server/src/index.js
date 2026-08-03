@@ -169,7 +169,7 @@ app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-app.use(cors({ origin: config.clientUrl, credentials: true }));
+app.use(cors({ origin: config.corsOrigins, credentials: true }));
 app.use(morgan(config.isDev ? 'dev' : 'combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));

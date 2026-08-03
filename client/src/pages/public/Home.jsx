@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Link } from 'react-router-dom';
 import { Home as HomeIcon, Building2, Wrench, DraftingCompass, Road, BarChart3 } from 'lucide-react';
 import { crud } from '../../services/api';
@@ -26,7 +27,7 @@ function ChannelVideos() {
   const [playing, setPlaying] = useState(null);
 
   useEffect(() => {
-    fetch('/api/youtube/videos?limit=6')
+    fetch(API_BASE_URL + '/api/youtube/videos?limit=6')
       .then(r => r.json())
       .then(json => { if (json.success) setVideos(json.data || []); })
       .catch(() => { })

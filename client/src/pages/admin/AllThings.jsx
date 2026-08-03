@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Users, FileText, Plus, Loader2, Edit3, Trash2, X, Upload, Check, Search, Layers } from 'lucide-react';
 import { crud } from '../../services/api';
 
@@ -179,7 +180,7 @@ function MemberForm({ member, onSave, onClose }) {
     try {
       const fd = new FormData();
       fd.append('file', file);
-      const res = await fetch('/api/uploads?category=team', {
+      const res = await fetch(API_BASE_URL + '/api/uploads?category=team', {
         method: 'POST',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: fd,

@@ -1,8 +1,9 @@
 import { useEffect, useCallback } from 'react';
+import { API_BASE_URL } from '../config/api';
 import { useLocation } from 'react-router-dom';
 
 const send = (payload) => {
-  fetch('/api/activity-logs', {
+  fetch(API_BASE_URL + '/api/activity-logs', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

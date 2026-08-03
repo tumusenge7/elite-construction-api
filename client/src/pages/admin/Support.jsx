@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Loader2, Trash2 } from 'lucide-react';
 
 export default function AdminSupport() {
@@ -8,14 +9,14 @@ export default function AdminSupport() {
 
   const fetch_ = () => {
     setLoading(true);
-    fetch('/api/support', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(API_BASE_URL + '/api/support', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(j => setItems(j.data || [])).catch(() => {}).finally(() => setLoading(false));
   };
   useEffect(fetch_, [token]);
 
   const del = async (id) => {
     if (!confirm('Delete?')) return;
-    await fetch(`/api/support/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    await fetch(API_BASE_URL + `/api/support/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
     fetch_();
   };
 

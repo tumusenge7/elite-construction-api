@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../../config/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { CheckCircle, LogIn, Copy, Check, Loader2, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -41,7 +42,7 @@ export default function RequestQuote() {
 
     try {
       // 1. Submit quote request to API
-      const quoteRes = await fetch('/api/contact', {
+      const quoteRes = await fetch(API_BASE_URL + '/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
