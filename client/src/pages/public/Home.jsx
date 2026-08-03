@@ -114,10 +114,7 @@ export default function Home() {
             Building <span className="text-blue-400">Excellence</span><br />Delivering Trust
           </h1>
           <p className="text-lg text-gray-200 max-w-2xl mx-auto mb-8">
-            Build Smarter. Build Better. Build with Elite.
-            Stop worrying about contractors who overpromise and underdeliver. Elite Construction brings precision, transparency, and top-tier craftsmanship to every project—from kitchen remodels to full commercial builds.
 
-            Your vision. Our expertise. Zero surprises.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/request-quote" className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all hover:scale-105">
